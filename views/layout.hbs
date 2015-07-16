@@ -8,6 +8,7 @@
     <nav>
       {{#if currentUserEmail}}
         <h1>Welcome, {{currentUserEmail}}!</h1>
+        <a href="/signout">Sign out</a>
       {{else}}
         <a href="/signup">Sign up</a>
       {{/if}}

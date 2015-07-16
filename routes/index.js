@@ -10,4 +10,9 @@ router.get('/signup', function(req, res, next) {
   res.render('users/new');
 });
 
+router.get('/signout', function(req, res, next) {
+  req.session = null;
+  res.redirect('/');
+});
+
 module.exports = router;

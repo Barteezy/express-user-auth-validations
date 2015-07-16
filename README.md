@@ -53,7 +53,7 @@
   * `var cookieSession = require('cookie-session')`
 1. Add to `app.js` under the engine setup:
 
-  ```
+  ```js
   app.set('trust proxy', 1)
   app.use(cookieSession({
     name: 'session',
@@ -67,7 +67,7 @@
   * `var User = db.get('users');`
 1. Add route to create user from signup form in `users.js`:
 
-  ```
+  ```js
   router.post('/', function(req, res, next) {
     bcrypt.genSalt(10, function(err, salt) {
       bcrypt.hash(req.body.password, salt, function(err, hash) {
@@ -81,7 +81,7 @@
 
 1.  Pass in user email into views in the 'routes/index.js' file, updating root path like so:
 
-  ```
+  ```js
   router.get('/', function(req, res, next) {
     res.render('index', { title: 'Cool App, Dude', currentUserEmail: req.session.currentUserEmail});
   });
@@ -89,7 +89,7 @@
 
 1. And finally, update the layout view nav to use your new session:
 
-  ```
+  ```html
   <nav>
     {{#if currentUserEmail}}
       <h1>Welcome, {{currentUserEmail}}!</h1>
@@ -97,4 +97,16 @@
       <a href="/signup">Sign up</a>
     {{/if}}
   </nav>
+  ```
+
+#### User can signout
+1. Add a signout button to layout within `{{#if currentUserEmail}}`:
+  * `<a href="/signout">Sign out</a>`
+1. Add route to `index.js`:
+
+  ```js
+  router.get('/signout', function(req, res, next) {
+    req.session = null;
+    res.redirect('/');
+  });
   ```
