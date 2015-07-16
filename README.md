@@ -161,7 +161,7 @@
   ```
   router.post('/', function(req, res, next) {
     if (req.body.email == false){
-      res.render('users/new', {errors: "Please enter your email"});
+      res.render('users/new', {error: "Please enter your email"});
     } else {
       bcrypt.genSalt(10, function(err, salt) {
         bcrypt.hash(req.body.password, salt, function(err, hash) {
@@ -183,10 +183,26 @@
   ```
 
 #### User cannot sign up with duplicate email
-1. In user routes, add else if to post route:
+1. In post route:
 
   ```
-  else if (User.find({ email: req.body.email })) {
-    res.render('users/new', {errors: "Email has already been taken"});
-  }
+  router.post('/', function(req, res, next) {
+    if (req.body.email == false){
+      res.render('users/new', {error: "Email cannot be blank"})
+    } else {
+      User.find({email: req.body.email}, function (err, docs) {
+        if (docs.length === 0) {
+          bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(req.body.password, salt, function(err, hash) {
+              user = User.insert({ email: req.body.email, passwordDigest: hash });
+              req.session.currentUserEmail = user.query.email;
+              res.redirect('/');
+            });
+          });
+        } else {
+          res.render('users/new', {error: "Email already exists", email: req.body.email})
+        }
+      })
+    }
+  });
   ```
