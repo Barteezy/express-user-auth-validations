@@ -12,7 +12,7 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   bcrypt.genSalt(10, function(err, salt) {
     bcrypt.hash(req.body.password, salt, function(err, hash) {
-      user = User.insert({ email: req.body.email, password_digest: hash });
+      user = User.insert({ email: req.body.email, passwordDigest: hash });
       req.session.currentUserEmail = user.query.email;
       res.redirect('/');
     });

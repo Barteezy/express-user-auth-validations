@@ -15,4 +15,8 @@ router.get('/signout', function(req, res, next) {
   res.redirect('/');
 });
 
+router.get('/signin', function(req, res, next) {
+  res.render('authentication/new');
+});
+
 module.exports = router;

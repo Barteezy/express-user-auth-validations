@@ -33,7 +33,7 @@
 1. Create a file `views/users/new.hbs` with the following content:
 
   ```html
-  <form class="signup" action="/users" method="post">
+  <form action="/users" method="post">
     <label for="email">Email</label>
     <input type="email" name="email" value="">
     <br>
@@ -71,7 +71,7 @@
   router.post('/', function(req, res, next) {
     bcrypt.genSalt(10, function(err, salt) {
       bcrypt.hash(req.body.password, salt, function(err, hash) {
-        user = User.insert({ email: req.body.email, password_digest: hash });
+        user = User.insert({ email: req.body.email, passwordDigest: hash });
         req.session.currentUserEmail = user.query.email;
         res.redirect('/');
       });
@@ -100,7 +100,7 @@
   ```
 
 #### User can signout
-1. Add a signout button to layout within `{{#if currentUserEmail}}`:
+1. Add a signout link to layout within `{{#if currentUserEmail}}`:
   * `<a href="/signout">Sign out</a>`
 1. Add route to `index.js`:
 
@@ -108,5 +108,49 @@
   router.get('/signout', function(req, res, next) {
     req.session = null;
     res.redirect('/');
+  });
+  ```
+
+#### User can signin
+1. Add a signin link to layout.hbs within else portion of `{{#if currentUserEmail}}`:
+  * `<a href="/signin">Sign in</a>`
+1. Add route to `index.js`
+
+  ```js
+  router.get('/signin', function(req, res, next) {
+    res.render('authentication/new');
+  });
+  ```
+
+1. Add `views/authentication/new.hbs` with the following content:
+
+  ```html
+  <h1>Sign in!</h1>
+  <form action="/authentication" method="post">
+    <label for="email">Email</label>
+    <input type="email" name="email" value="">
+    <br>
+    <label for="password">Password</label>
+    <input type="password" name="password" value="">
+    <br>
+    <input type="submit" value="Sign In">
+  </form>
+  ```
+
+1. Add a authentication router to `app.js`:
+  * `var authentication = require('./routes/authentication');` near other like route variables
+  * `app.use('/authentication', authentication);` near other like `app.use` route middleware
+1. Add a new route file `routes/authentication.js` with the following content:
+
+  ```js
+  router.post('/', function(req, res, next) {
+    User.findOne({ email: req.body.email }).on('success', function (user) {
+      bcrypt.compare(req.body.password, user.passwordDigest, function(err, valid) {
+        if (valid) {
+          req.session.currentUserEmail = user.email;
+          res.redirect('/');
+        };
+      });
+    });
   });
   ```
