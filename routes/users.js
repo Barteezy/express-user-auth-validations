@@ -12,6 +12,8 @@ router.get('/', function(req, res, next) {
 router.post('/', function(req, res, next) {
   if (req.body.email == false){
     res.render('users/new', {errors: "Please enter your email"});
+  } else if (User.find({ email: req.body.email })) {
+    res.render('users/new', {errors: "Email has already been taken"});
   } else {
     bcrypt.genSalt(10, function(err, salt) {
       bcrypt.hash(req.body.password, salt, function(err, hash) {

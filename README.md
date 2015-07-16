@@ -181,3 +181,12 @@
     <h4>{{error}}</h4>
   {{/if}}
   ```
+
+#### User cannot sign up with duplicate email
+1. In user routes, add else if to post route:
+
+  ```
+  else if (User.find({ email: req.body.email })) {
+    res.render('users/new', {errors: "Email has already been taken"});
+  }
+  ```
