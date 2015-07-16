@@ -154,3 +154,30 @@
     });
   });
   ```
+
+#### User must enter an email address on signup
+1. In user routes, change post route to:
+
+  ```
+  router.post('/', function(req, res, next) {
+    if (req.body.email == false){
+      res.render('users/new', {errors: "Please enter your email"});
+    } else {
+      bcrypt.genSalt(10, function(err, salt) {
+        bcrypt.hash(req.body.password, salt, function(err, hash) {
+          user = User.insert({ email: req.body.email, passwordDigest: hash });
+          req.session.currentUserEmail = user.query.email;
+          res.redirect('/');
+        });
+      });
+    };
+  });
+  ```
+
+1. To render this in the view, between h1 and form:
+
+  ```
+  {{#if error}}
+    <h4>{{error}}</h4>
+  {{/if}}
+  ```

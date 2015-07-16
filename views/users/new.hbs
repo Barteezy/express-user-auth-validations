@@ -1,4 +1,7 @@
 <h1>Sign up!</h1>
+{{#if errors}}
+  <h4>{{errors}}</h4>
+{{/if}}
 <form action="/users" method="post">
   <label for="email">Email</label>
   <input type="email" name="email" value="">

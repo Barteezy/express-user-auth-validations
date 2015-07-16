@@ -10,13 +10,17 @@ router.get('/', function(req, res, next) {
 });
 
 router.post('/', function(req, res, next) {
-  bcrypt.genSalt(10, function(err, salt) {
-    bcrypt.hash(req.body.password, salt, function(err, hash) {
-      user = User.insert({ email: req.body.email, passwordDigest: hash });
-      req.session.currentUserEmail = user.query.email;
-      res.redirect('/');
+  if (req.body.email == false){
+    res.render('users/new', {errors: "Please enter your email"});
+  } else {
+    bcrypt.genSalt(10, function(err, salt) {
+      bcrypt.hash(req.body.password, salt, function(err, hash) {
+        user = User.insert({ email: req.body.email, passwordDigest: hash });
+        req.session.currentUserEmail = user.query.email;
+        res.redirect('/');
+      });
     });
-  });
+  };
 });
 
 
