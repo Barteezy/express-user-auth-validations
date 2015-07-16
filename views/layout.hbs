@@ -5,6 +5,13 @@
     <link rel='stylesheet' href='/stylesheets/style.css' />
   </head>
   <body>
+    <nav>
+      {{#if currentUserEmail}}
+        <h1>Welcome, {{currentUserEmail}}!</h1>
+      {{else}}
+        <a href="/signup">Sign up</a>
+      {{/if}}
+    </nav>
     {{{body}}}
   </body>
 </html>
